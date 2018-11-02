@@ -39,21 +39,22 @@ import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.*;
+import static java.util.Optional.*;
 
 class SpringDataRestRequestHandler implements RequestHandler {
   private final EntityContext entityContext;
   private final ActionSpecification actionSpecification;
 
   SpringDataRestRequestHandler(
-      EntityContext entityContext,
-      ActionSpecification actionSpecification) {
+          EntityContext entityContext,
+          ActionSpecification actionSpecification) {
     this.entityContext = entityContext;
     this.actionSpecification = actionSpecification;
   }
 
   @Override
   public Class<?> declaringClass() {
-    return actionSpecification.getDeclaringClass().orNull();
+    return actionSpecification.getDeclaringClass().orElse(null);
   }
 
   @Override
@@ -116,7 +117,7 @@ class SpringDataRestRequestHandler implements RequestHandler {
 
   @Override
   public List<ResolvedMethodParameter> getParameters() {
-    return new ArrayList<ResolvedMethodParameter>(actionSpecification.getParameters());
+    return new ArrayList<>(actionSpecification.getParameters());
   }
 
   @Override
@@ -135,7 +136,7 @@ class SpringDataRestRequestHandler implements RequestHandler {
 
   @Override
   public HandlerMethod getHandlerMethod() {
-    return actionSpecification.getHandlerMethod().orNull();
+    return actionSpecification.getHandlerMethod().orElse(null);
   }
 
   @Override

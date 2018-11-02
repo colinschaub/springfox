@@ -16,3 +16,4 @@ generated-src
 .env
 out/
 *.hprof
+bin/

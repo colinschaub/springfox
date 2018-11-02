@@ -20,6 +20,7 @@ package springfox.documentation.spring.data.rest;
 
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.data.mapping.PersistentEntity;
+import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.repository.core.CrudMethods;
 import org.springframework.data.repository.core.RepositoryInformation;
@@ -33,8 +34,12 @@ import org.springframework.data.rest.webmvc.mapping.Associations;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Optional;
+
+import static springfox.documentation.spring.data.rest.Paths.*;
 
 public class EntityContext {
+
   private final RepositoryRestConfiguration configuration;
   private final RepositoryInformation repository;
   private final Object repositoryInstance;
@@ -44,17 +49,19 @@ public class EntityContext {
   private final PersistentEntities entities;
   private final Associations associations;
   private final RequestHandlerExtractorConfiguration extractorConfiguration;
+  private final String contextPath;
 
   public EntityContext(
-      TypeResolver typeResolver,
-      RepositoryRestConfiguration configuration,
-      RepositoryInformation repository,
-      Object repositoryInstance,
-      ResourceMetadata resource,
-      ResourceMappings mappings,
-      PersistentEntities entities,
-      Associations associations,
-      RequestHandlerExtractorConfiguration extractorConfiguration) {
+          TypeResolver typeResolver,
+          String contextPath,
+          RepositoryRestConfiguration configuration,
+          RepositoryInformation repository,
+          Object repositoryInstance,
+          ResourceMetadata resource,
+          ResourceMappings mappings,
+          PersistentEntities entities,
+          Associations associations,
+          RequestHandlerExtractorConfiguration extractorConfiguration) {
 
     this.configuration = configuration;
     this.repository = repository;
@@ -65,17 +72,15 @@ public class EntityContext {
     this.entities = entities;
     this.associations = associations;
     this.extractorConfiguration = extractorConfiguration;
+    this.contextPath = contextPath;
   }
 
   public String getName() {
     return resource.getDomainType().getSimpleName();
   }
 
-  public PersistentEntity<?, ?> entity() {
-    Object domainType = resource.getDomainType();
-    Java8OptionalToGuavaOptionalConverter converter = new Java8OptionalToGuavaOptionalConverter();
-    Class actualDomainType = (Class) converter.convert(domainType).orNull();
-    return entities.getPersistentEntity(actualDomainType);
+  public Optional<PersistentEntity<?, ? extends PersistentProperty<?>>> entity() {
+    return entities.getPersistentEntity(resource.getDomainType());
   }
 
   public CrudMethods crudMethods() {
@@ -117,4 +122,9 @@ public class EntityContext {
   public Collection<EntityAssociationOperationsExtractor> getAssociationExtractors() {
     return extractorConfiguration.getAssociationExtractors();
   }
+
+  public String contextPath() {
+    return rootPathWhenEmpty(contextPath);
+  }
+
 }

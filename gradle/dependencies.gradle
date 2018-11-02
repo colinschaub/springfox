@@ -20,7 +20,7 @@ ext {
   spock = "1.1-groovy-2.4"
   spring = "4.3.18.RELEASE"
   springHateoas = "0.24.0.RELEASE"
-  springDataRest = "2.6.13.RELEASE"
+  springDataRest = "3.1.2.RELEASE"
   springPluginVersion = "1.2.0.RELEASE"
   swagger2Core = "1.5.20"
   springBoot = "1.5.14.RELEASE"
